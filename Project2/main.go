@@ -64,15 +64,10 @@ func printPrompt(w io.Writer) error {
 }
 
 func handleInput(w io.Writer, input string, exit chan<- struct{}) error {
-	// Remove trailing spaces.
 	input = strings.TrimSpace(input)
-
-	// Split the input separate the command name and the command arguments.
 	args := strings.Split(input, " ")
 	name, args := args[0], args[1:]
 
-	// Check for built-in commands.
-	// New builtin commands should be added here. Eventually this should be refactored to its own func.
 	switch name {
 	case "cd":
 		return builtins.ChangeDirectory(args...)
@@ -81,6 +76,12 @@ func handleInput(w io.Writer, input string, exit chan<- struct{}) error {
 	case "exit":
 		exit <- struct{}{}
 		return nil
+	case "ls":
+		return builtins.ListFiles(w, args...)
+	case "pwd":
+		return builtins.PrintWorkingDirectory(w)
+	case "echo":
+		return builtins.Echo(w, args...)
 	}
 
 	return executeCommand(name, args...)
