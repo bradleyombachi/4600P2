@@ -1,4 +1,4 @@
-module github.com/bradleyombachi/CSCE4600P2
+module github.com/bradleyombachi/4600P2
 
 go 1.22
 

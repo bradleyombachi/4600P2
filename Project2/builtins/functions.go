@@ -7,7 +7,7 @@ import (
 	"strings"
 )
 
-// ListFiles lists the files in the current or a specified directory.
+// list all files in current directory
 func ListFiles(w io.Writer, args ...string) error {
 	dir := "."
 	if len(args) > 0 {
@@ -26,7 +26,21 @@ func ListFiles(w io.Writer, args ...string) error {
 	return nil
 }
 
-// PrintWorkingDirectory prints the current working directory.
+// deletes the specified file
+func RemoveFile(w io.Writer, args ...string) error {
+	if len(args) == 0 {
+		return fmt.Errorf("no file specified to remove")
+	}
+	filename := args[0]
+	err := os.Remove(filename)
+	if err != nil {
+		return err
+	}
+	_, err = fmt.Fprintf(w, "Removed file: %s\n", filename)
+	return err
+}
+
+// prints the current directory
 func PrintWorkingDirectory(w io.Writer) error {
 	wd, err := os.Getwd()
 	if err != nil {
@@ -36,8 +50,22 @@ func PrintWorkingDirectory(w io.Writer) error {
 	return err
 }
 
-// Echo outputs the arguments as a single string.
+// outputs the argument as a string
 func Echo(w io.Writer, args ...string) error {
 	_, err := fmt.Fprintln(w, strings.Join(args, " "))
+	return err
+}
+
+// creates new directory with provided name
+func MakeDirectory(w io.Writer, args ...string) error {
+	if len(args) == 0 {
+		return fmt.Errorf("no directory name given")
+	}
+	dirName := args[0]
+	err := os.Mkdir(dirName, 0755)
+	if err != nil {
+		return err
+	}
+	_, err = fmt.Fprintf(w, "New directory: %s\n", dirName)
 	return err
 }

@@ -5,7 +5,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/bradleyombachi/CSCE4600P2/Project2/builtins"
+	"github.com/bradleyombachi/4600P2/Project2/builtins"
 )
 
 func TestChangeDirectory(t *testing.T) {
