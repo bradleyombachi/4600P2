@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"io"
 	"strings"
-	"sync"
 	"testing"
 	"testing/iotest"
 	"time"
@@ -45,25 +44,12 @@ func Test_runLoop(t *testing.T) {
 			w := &bytes.Buffer{}
 			errW := &bytes.Buffer{}
 
-			// Create a new exit channel and sync group for this test case
-			exit := make(chan struct{}, 1)
-			var wg sync.WaitGroup
-			wg.Add(1)
-
-			// Run `runLoop` in a separate goroutine
-			go func() {
-				defer wg.Done()
-				runLoop(tt.args.r, w, errW, exit)
-			}()
-
-			// Give time for the `runLoop` to start, then send the signal to exit
+			exit := make(chan struct{}, 2)
+			// run the loop for 10ms
+			go runLoop(tt.args.r, w, errW, exit)
 			time.Sleep(10 * time.Millisecond)
 			exit <- struct{}{}
 
-			// Wait for the goroutine to finish
-			wg.Wait()
-
-			// Check output and error output
 			require.NotEmpty(t, w.String())
 			if tt.wantErrW != "" {
 				require.Contains(t, errW.String(), tt.wantErrW)
