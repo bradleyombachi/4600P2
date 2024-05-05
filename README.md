@@ -2,7 +2,7 @@
 
 ## Description
 
-The functions I implemented are the bash commands "ls", "pwd", "mkdir", "echo" and "fm".
+The functions I implemented are the bash commands "ls", "pwd", "mkdir", "echo" and "rm".
 
 ## How to Run
 
