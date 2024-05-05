@@ -12,8 +12,6 @@ import (
 	"github.com/bradleyombachi/4600P2/Project2/builtins"
 )
 
-var terminate = make(chan struct{}) // Unbuffered channel for termination signal
-
 func main() {
 	exit := make(chan struct{}, 2) // buffer this so there's no deadlock.
 	runLoop(os.Stdin, os.Stdout, os.Stderr, exit)
