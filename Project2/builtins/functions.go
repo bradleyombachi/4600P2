@@ -50,13 +50,13 @@ func PrintWorkingDirectory(w io.Writer) error {
 	return err
 }
 
-// outputs the argument as a string
+// outputs the provided argument as a string
 func Echo(w io.Writer, args ...string) error {
 	_, err := fmt.Fprintln(w, strings.Join(args, " "))
 	return err
 }
 
-// creates new directory with provided name
+// creates new directory with name given by user
 func MakeDirectory(w io.Writer, args ...string) error {
 	if len(args) == 0 {
 		return fmt.Errorf("no directory name given")

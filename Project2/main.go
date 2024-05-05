@@ -81,6 +81,9 @@ func handleInput(w io.Writer, input string, exit chan<- struct{}) error {
 		return builtins.RemoveFile(w, args...)
 	case "mkdir":
 		return builtins.MakeDirectory(w, args...)
+	case "exit": // Add this case to handle 'exit'
+		close(exit)
+		return nil
 	}
 
 	return executeCommand(name, args...)
