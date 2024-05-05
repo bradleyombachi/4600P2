@@ -45,22 +45,22 @@ func Test_runLoop(t *testing.T) {
 			w := &bytes.Buffer{}
 			errW := &bytes.Buffer{}
 
-			// Create a new exit channel and a WaitGroup for this specific test case
+			// Create a new exit channel and sync group for this test case
 			exit := make(chan struct{}, 1)
 			var wg sync.WaitGroup
 			wg.Add(1)
 
-			// Run `runLoop` in a goroutine
+			// Run `runLoop` in a separate goroutine
 			go func() {
 				defer wg.Done()
 				runLoop(tt.args.r, w, errW, exit)
 			}()
 
-			// Give some time for `runLoop` to start, then signal it to exit
+			// Give time for the `runLoop` to start, then send the signal to exit
 			time.Sleep(10 * time.Millisecond)
 			exit <- struct{}{}
 
-			// Wait for the goroutine to finish before checking outputs
+			// Wait for the goroutine to finish
 			wg.Wait()
 
 			// Check output and error output
