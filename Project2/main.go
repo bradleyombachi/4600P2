@@ -12,20 +12,11 @@ import (
 	"github.com/bradleyombachi/4600P2/Project2/builtins"
 )
 
+var terminate = make(chan struct{}) // Unbuffered channel for termination signal
+
 func main() {
 	exit := make(chan struct{}, 2) // buffer this so there's no deadlock.
 	runLoop(os.Stdin, os.Stdout, os.Stderr, exit)
-}
-
-func safeClose(exit chan struct{}) {
-	select {
-	case <-exit:
-		// Already closed.
-		return
-	default:
-		// Close if not already closed.
-		close(exit)
-	}
 }
 
 func runLoop(r io.Reader, w, errW io.Writer, exit chan struct{}) {
@@ -74,7 +65,7 @@ func printPrompt(w io.Writer) error {
 	return err
 }
 
-func handleInput(w io.Writer, input string, exit chan struct{}) error {
+func handleInput(w io.Writer, input string, exit chan<- struct{}) error {
 	input = strings.TrimSpace(input)
 	args := strings.Split(input, " ")
 	name, args := args[0], args[1:]
@@ -92,8 +83,8 @@ func handleInput(w io.Writer, input string, exit chan struct{}) error {
 		return builtins.RemoveFile(w, args...)
 	case "mkdir":
 		return builtins.MakeDirectory(w, args...)
-	case "exit": // Add this case to handle 'exit'
-		safeClose(exit)
+	case "exit":
+		close(exit)
 		return nil
 	}
 

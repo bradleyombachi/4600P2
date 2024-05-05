@@ -2,12 +2,13 @@ package main
 
 import (
 	"bytes"
-	"github.com/stretchr/testify/require"
 	"io"
 	"strings"
 	"testing"
 	"testing/iotest"
 	"time"
+
+	"github.com/stretchr/testify/require"
 )
 
 func Test_runLoop(t *testing.T) {
@@ -46,6 +47,9 @@ func Test_runLoop(t *testing.T) {
 			exit := make(chan struct{}, 2)
 			// run the loop for 10ms
 			go runLoop(tt.args.r, w, errW, exit)
+
+			close(terminate)
+
 			time.Sleep(10 * time.Millisecond)
 			exit <- struct{}{}
 
