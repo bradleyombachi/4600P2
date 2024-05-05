@@ -48,10 +48,10 @@ func Test_runLoop(t *testing.T) {
 			// run the loop for 10ms
 			go runLoop(tt.args.r, w, errW, exit)
 
-			close(terminate)
-
 			time.Sleep(10 * time.Millisecond)
 			exit <- struct{}{}
+
+			close(terminate)
 
 			require.NotEmpty(t, w.String())
 			if tt.wantErrW != "" {
