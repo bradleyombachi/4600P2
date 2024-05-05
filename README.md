@@ -2,7 +2,7 @@
 
 ## Description
 
-This project involves implementing and running specific functionality.
+The functions I implemented are the bash commands "ls", "pwd", "mkdir", "echo" and "fm".
 
 ## How to Run
 
