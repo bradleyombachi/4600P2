@@ -44,22 +44,20 @@ func Test_runLoop(t *testing.T) {
 			w := &bytes.Buffer{}
 			errW := &bytes.Buffer{}
 
-			// Create a new exit channel for this specific test case
-			exit := make(chan struct{})
+			// Create a new exit channel for each test case to prevent sending to a closed channel
+			exit := make(chan struct{}, 1)
 
-			// Run `runLoop` in a goroutine
-			go func() {
-				defer close(exit) // Close the exit channel only after the loop finishes
-				runLoop(tt.args.r, w, errW, exit)
-			}()
+			// Start the runLoop in a separate goroutine
+			go runLoop(tt.args.r, w, errW, exit)
 
-			// Give some time for `runLoop` to start, then signal it to exit
+			// Give the goroutine some time to start up and then signal it to exit
 			time.Sleep(10 * time.Millisecond)
 			exit <- struct{}{}
 
-			// Allow the loop to finish before checking outputs
+			// Ensure the goroutine completes before checking the output
 			time.Sleep(10 * time.Millisecond)
 
+			// Check output and error output
 			require.NotEmpty(t, w.String())
 			if tt.wantErrW != "" {
 				require.Contains(t, errW.String(), tt.wantErrW)
