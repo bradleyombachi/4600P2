@@ -44,8 +44,8 @@ func Test_runLoop(t *testing.T) {
 			w := &bytes.Buffer{}
 			errW := &bytes.Buffer{}
 
-			// Create a new exit channel for each test case to prevent data race conditions
-			exit := make(chan struct{}, 2)
+			// Create a new exit channel for each test case
+			exit := make(chan struct{}, 1)
 
 			// Start the runLoop in a separate goroutine
 			go runLoop(tt.args.r, w, errW, exit)
@@ -54,7 +54,10 @@ func Test_runLoop(t *testing.T) {
 			time.Sleep(10 * time.Millisecond)
 			exit <- struct{}{}
 
-			// Ensure there is output or error output, based on the test case
+			// Ensure the goroutine completes before checking the output
+			time.Sleep(10 * time.Millisecond)
+
+			// Check output and error output
 			require.NotEmpty(t, w.String())
 			if tt.wantErrW != "" {
 				require.Contains(t, errW.String(), tt.wantErrW)
